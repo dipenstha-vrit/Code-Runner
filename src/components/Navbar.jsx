@@ -23,7 +23,7 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
       <nav className="fixed top-0 z-50 w-full bg-gray-800">
         <div className="px-3 py-1 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between flex-wrap">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               {/* Sidebar Toggle Button */}
               <button
                 onClick={handleSidebarToggle}

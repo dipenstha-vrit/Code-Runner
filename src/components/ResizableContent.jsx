@@ -21,7 +21,7 @@ const ResponsiveResizableContent = () => {
   }, []);
 
   return (
-    <div className="h-dvh p-4 rounded-md bg-gray-900 text-white">
+    <div className="h-dvh p-2 rounded-md bg-gray-800 text-white">
       <PanelGroup
         className="h-full"
         autoSaveId="responsive-panel-group"
@@ -29,7 +29,7 @@ const ResponsiveResizableContent = () => {
       >
         {/* Left or Top Panel */}
         <Panel defaultSize={50} minSize={30}>
-          <div className="border border-gray-800 rounded-md h-full p-2">
+          <div className=" bg-gray-900 rounded-md h-full p-2">
             <p>Left/Top Panel</p>
           </div>
         </Panel>
@@ -50,7 +50,7 @@ const ResponsiveResizableContent = () => {
           >
             {/* Top Right or Bottom Top Panel */}
             <Panel defaultSize={30} minSize={10}>
-              <div className="border border-gray-800 rounded-md h-full p-2">
+              <div className="bg-gray-900 rounded-md h-full p-2">
                 <form className="h-full w-full">
                   <textarea
                     placeholder="Enter Input here"
@@ -67,7 +67,7 @@ const ResponsiveResizableContent = () => {
 
             {/* Bottom Right or Bottom Panel */}
             <Panel defaultSize={70} minSize={50}>
-              <div className="border border-gray-800 rounded-md h-full p-2">
+              <div className="bg-gray-900 rounded-md h-full p-2">
                 <p>Output</p>
               </div>
             </Panel>
