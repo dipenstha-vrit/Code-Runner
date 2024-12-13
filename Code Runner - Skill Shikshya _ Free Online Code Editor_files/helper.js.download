@@ -1,0 +1,731 @@
+const languageConfig = {
+    python: {
+        mode: 'python',
+        version: 'Python 3.8.5',
+        defaultCode: '# Python code here\nprint("Hello, skill Shikshya!")',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+        mimeType: 'text/x-python'
+    },
+    javascript: {
+        mode: 'javascript',
+        version: 'Node.js 14.17',
+        defaultCode: '// JavaScript code here\nconsole.log("Hello, skill Shikshya!");',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
+        mimeType: 'text/javascript'
+    },
+    cpp: {
+        mode: 'text/x-c++src',
+        version: 'C++ 17',
+        defaultCode: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, skill Shikshya!" << std::endl;\n    return 0;\n}',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg',
+        mimeType: 'text/x-c++'
+    },
+    rust: {
+        mode: 'rust',
+        version: 'Rust 1.68.0',
+        defaultCode: 'fn main() {\n    println!("Hello, skill Shikshya!");\n}',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-plain.svg',
+        mimeType: 'text/x-rustsrc'
+    },
+    ruby: {
+        mode: 'ruby',
+        version: 'Ruby 3.1.0',
+        defaultCode: 'puts "Hello, skill Shikshya!"',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg',
+        mimeType: 'text/x-ruby'
+    },
+    go: {
+        mode: 'go',
+        version: 'Go 1.20',
+        defaultCode: 'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, skill Shikshya!")\n}',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg',
+        mimeType: 'text/x-go'
+    },
+    java: {
+        mode: 'text/x-java',
+        version: 'Java 17',
+        defaultCode: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, skill Shikshya!");\n    }\n}',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
+        mimeType: 'text/x-java'
+    },
+    csharp: {
+        mode: 'text/x-csharp',
+        version: 'C# 10.0',
+        defaultCode: 'using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, skill Shikshya!");\n    }\n}',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg',
+        mimeType: 'text/x-csharp'
+    },
+    kotlin: {
+        mode: 'text/x-kotlin',
+        version: 'Kotlin 1.8',
+        defaultCode: 'fun main() {\n    println("Hello, skill Shikshya!")\n}',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg',
+        mimeType: 'text/x-kotlin'
+    },
+    swift: {
+        mode: 'swift',
+        version: 'Swift 5.7',
+        defaultCode: 'print("Hello, skill Shikshya!")',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg',
+        mimeType: 'text/x-swift'
+    },
+    php: {
+        mode: 'php',
+        version: 'PHP 8.2',
+        defaultCode: '<?php\necho "Hello, skill Shikshya!";',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg',
+        mimeType: 'text/x-php'
+    },
+    html: {
+        mode: 'xml',  // CodeMirror uses 'xml' mode for HTML
+        version: 'HTML5',
+        defaultCode: '<!DOCTYPE html>\n<html>\n<head>\n  <title>My Page</title>\n</head>\n<body>\n  <h1>Hello, skill Shikshya!</h1>\n</body>\n</html>',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
+        mimeType: 'text/html'
+    },
+    css: {
+        mode: 'css',
+        version: 'CSS3',
+        defaultCode: 'body {\n  background-color: #f0f0f0;\n}\n\nh1 {\n  color: #333;\n  text-align: center;\n}',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
+        mimeType: 'text/css'
+    }
+};
+
+
+// WebSocket connection handling
+let socket = null;
+let isRunning = false;
+let reconnectAttempts = 0;
+const MAX_RECONNECT_ATTEMPTS = 5;
+let currentLanguage = 'python';
+
+// Initialize CodeMirror
+const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+    name: 'text/x-c++src',
+    mode: 'python',
+    theme: 'dracula',
+    keywords: {
+        'auto':true, 'break':true, 'case':true, 'char':true, 'const':true, 'continue':true,
+        'default':true, 'do':true, 'double':true, 'else':true, 'enum':true, 'extern':true,
+        'float':true, 'for':true, 'goto':true, 'if':true, 'inline':true, 'int':true,
+        'long':true, 'register':true, 'restrict':true, 'return':true, 'short':true,
+        'signed':true, 'sizeof':true, 'static':true, 'struct':true, 'switch':true,
+        'typedef':true, 'union':true, 'unsigned':true, 'void':true, 'volatile':true,
+        'while':true, 'class':true, 'delete':true, 'friend':true, 'namespace':true,
+        'new':true, 'operator':true, 'private':true, 'protected':true, 'public':true,
+        'template':true, 'this':true, 'throw':true, 'try':true, 'catch':true, 'typename':true,
+        'using':true, 'virtual':true, 'include':true
+    },
+    blockKeywords: {'catch':true, 'class':true, 'do':true, 'else':true, 'for':true, 
+        'if':true, 'switch':true, 'try':true, 'while':true},
+    atoms: {'true':true, 'false':true, 'null':true},
+    hooks: {
+            '#': function(stream) {
+                stream.eatWhile(/[\w\$_]/);
+                return 'preprocessor';
+            }
+        },
+    lineNumbers: true,
+    indentUnit: 4,
+    autoCloseBrackets: true,
+    matchBrackets: true,
+    styleActiveLine: true,
+    lineWrapping: true,
+    foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+    extraKeys: {
+        "Tab": function(cm) {
+            if (cm.somethingSelected()) {
+                cm.indentSelection("add");
+            } else {
+                cm.replaceSelection("    ", "end");
+            }
+        }
+    }
+});
+
+// DOM elements
+const outputDiv = document.getElementById('output');
+const inputField = document.getElementById('input');
+const runButton = document.getElementById('runBtn');
+const stopButton = document.getElementById('stopBtn');
+const sendButton = document.getElementById('sendBtn');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const languageSelect = document.getElementById('language');
+const themeSelect = document.getElementById('theme');
+
+// WebSocket initialization
+function initWebSocket() {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+    }
+
+    socket = new WebSocket(`wss://${window.location.host}/ws/compiler/`);
+    
+    socket.addEventListener('open', () => {
+        console.log('WebSocket connection established');
+        reconnectAttempts = 0;
+        setupPingPong();
+        updateStatus(false);
+        sendClientInfo(); // Add this line
+    });
+    
+    socket.addEventListener('message', (event) => {
+try {
+const data = JSON.parse(event.data);
+
+// Handle pong response with stats
+if (data.command === 'pong' && data.stats) {
+    // Update total connections
+    const totalConnections = data.stats.current_stats.active_connections || 0;
+    document.getElementById('total_connections').textContent = totalConnections;
+    
+    // Update per-language counts
+    const languageCounts = data.stats.current_stats.by_language || {};
+    const languageSelect = document.getElementById('language');
+    
+    // Update all language options in the dropdown
+    Object.keys(languageConfig).forEach(language => {
+        const option = languageSelect.querySelector(`option[value="${language}"]`);
+        if (option) {
+            const count = languageCounts[language] || 0;
+            option.textContent = `${language} (${count})`;
+        }
+    });
+    
+    // Update sidebar icons with active user count badges
+    document.querySelectorAll('.sidebar-icon').forEach(icon => {
+        const language = icon.dataset.language;
+        const count = languageCounts[language] || 0;
+        
+        // Remove existing badge if any
+        const existingBadge = icon.querySelector('.user-count-badge');
+        if (existingBadge) {
+            existingBadge.remove();
+        }
+        
+        // Add new badge if count > 0
+        if (count > 0) {
+            const badge = document.createElement('div');
+            badge.className = 'user-count-badge';
+            badge.textContent = count;
+            icon.appendChild(badge);
+        }
+    });
+}
+
+// Handle regular output
+if (data.data) {
+    outputDiv.textContent += data.data;
+    outputDiv.scrollTop = outputDiv.scrollHeight;
+}
+} catch (error) {
+console.error('Error processing message:', error);
+}
+});
+ 
+    socket.addEventListener('close', (event) => {
+        if (!event.wasClean && reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+            reconnectAttempts++;
+            setTimeout(initWebSocket, 1000 * reconnectAttempts);
+        }
+    });
+
+    socket.addEventListener('error', (error) => {
+        console.error('WebSocket error:', error);
+    });
+}
+
+async function sendClientInfo() {
+    // alert(currentLanguage)
+try {
+    const clientInfo = {
+        command: 'client_info',
+        browser: getBrowserInfo(),
+        os: getOSInfo(),
+        language: currentLanguage,
+        battery: await getBatteryInfo(),
+        screen: {
+            width: window.screen.width,
+            height: window.screen.height,
+            colorDepth: window.screen.colorDepth
+        }
+    };
+    
+    socket.send(JSON.stringify(clientInfo));
+} catch (error) {
+    console.error('Error sending client info:', error);
+}
+}
+
+// Helper functions
+function getBrowserInfo() {
+const userAgent = navigator.userAgent;
+let browserName = 'unknown';
+let browserVersion = '';
+
+// Brave detection
+if (navigator.brave?.isBrave()) {
+    return 'Brave';
+}
+
+// Microsoft Edge
+if (userAgent.match(/Edge|Edg/i)) {
+    browserName = 'Edge';
+    browserVersion = userAgent.match(/Edge?\/([0-9\.]+)/i)?.[1];
+}
+// Opera
+else if (userAgent.match(/OPR|Opera/i)) {
+    browserName = 'Opera';
+    browserVersion = userAgent.match(/OPR\/([0-9\.]+)/i)?.[1];
+}
+// Firefox
+else if (userAgent.match(/Firefox|FxiOS/i)) {
+    browserName = 'Firefox';
+    browserVersion = userAgent.match(/Firefox\/([0-9\.]+)/i)?.[1];
+}
+// Internet Explorer
+else if (userAgent.match(/MSIE|Trident/i)) {
+    browserName = 'Internet Explorer';
+    browserVersion = userAgent.match(/MSIE ([0-9\.]+)/i)?.[1];
+}
+// Chrome
+else if (userAgent.match(/Chrome/i)) {
+    browserName = 'Chrome';
+    browserVersion = userAgent.match(/Chrome\/([0-9\.]+)/i)?.[1];
+}
+// Safari
+else if (userAgent.match(/Safari/i)) {
+    browserName = 'Safari';
+    browserVersion = userAgent.match(/Safari\/([0-9\.]+)/i)?.[1];
+}
+// Vivaldi
+else if (userAgent.match(/Vivaldi/i)) {
+    browserName = 'Vivaldi';
+    browserVersion = userAgent.match(/Vivaldi\/([0-9\.]+)/i)?.[1];
+}
+// Samsung Browser
+else if (userAgent.match(/SamsungBrowser/i)) {
+    browserName = 'Samsung Browser';
+    browserVersion = userAgent.match(/SamsungBrowser\/([0-9\.]+)/i)?.[1];
+}
+// UC Browser
+else if (userAgent.match(/UCBrowser/i)) {
+    browserName = 'UC Browser';
+    browserVersion = userAgent.match(/UCBrowser\/([0-9\.]+)/i)?.[1];
+}
+// Yandex Browser
+else if (userAgent.match(/YaBrowser/i)) {
+    browserName = 'Yandex Browser';
+    browserVersion = userAgent.match(/YaBrowser\/([0-9\.]+)/i)?.[1];
+}
+
+return browserVersion ? `${browserName} ${browserVersion}` : browserName;
+}
+
+function getOSInfo() {
+const userAgent = navigator.userAgent;
+if (userAgent.includes('Windows')) return 'Windows';
+if (userAgent.includes('Mac')) return 'MacOS';
+if (userAgent.includes('Linux')) return 'Linux';
+if (userAgent.includes('Android')) return 'Android';
+if (userAgent.includes('iOS')) return 'iOS';
+return 'unknown';
+}
+
+async function getBatteryInfo() {
+try {
+    if ('getBattery' in navigator) {
+        const battery = await navigator.getBattery();
+        return {
+            level: Math.round(battery.level * 100),
+            charging: battery.charging
+        };
+    }
+} catch (error) {
+    console.error('Battery API error:', error);
+}
+return {};
+}
+// Ping-Pong mechanism
+function setupPingPong() {
+    const PING_INTERVAL = 3000; // 30 seconds
+    const PING_TIMEOUT = 5000;   // 5 seconds timeout for pong response
+    let pingTimeout;
+    
+    const heartbeat = () => {
+        clearTimeout(pingTimeout);
+    };
+    
+    const ping = () => {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ command: "ping" }));
+            
+            pingTimeout = setTimeout(() => {
+                console.log('Ping timeout - reconnecting');
+                socket.close();
+                initWebSocket();
+            }, PING_TIMEOUT);
+        }
+    };
+    
+    const interval = setInterval(() => {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            ping();
+        } else {
+            clearInterval(interval);
+        }
+    }, PING_INTERVAL);
+    
+    socket.addEventListener('close', () => {
+        clearInterval(interval);
+        clearTimeout(pingTimeout);
+    });
+    
+    socket.addEventListener('message', (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            if (data.command === 'pong') {
+                heartbeat();
+            }
+        } catch (error) {
+            console.error('Error processing pong:', error);
+        }
+    });
+}
+
+function changeLanguage(language) {
+const config = languageConfig[language];
+if (!config) return;
+
+currentLanguage = language;
+editor.setOption('mode', config.mode);
+editor.setValue(config.defaultCode);
+
+document.querySelector('.language-info').textContent = config.version;
+languageSelect.value = language;
+
+document.querySelectorAll('.sidebar-icon').forEach(icon => {
+icon.classList.toggle('active', icon.dataset.language === language);
+});
+
+// Send updated client info with new language
+if (socket && socket.readyState === WebSocket.OPEN) {
+sendClientInfo();
+}
+
+setTimeout(() => {
+editor.refresh();
+}, 1);
+
+const content = document.querySelector('.content');
+const existingPreview = document.querySelector('.preview-panel');
+const outputPanel = document.querySelector('.output-panel');
+
+if (['html', 'css'].includes(language)) {
+// Hide output panel
+if (outputPanel) {
+    outputPanel.style.display = 'none';
+}
+
+content.style.display = 'flex';
+
+if (!existingPreview) {
+    const previewPanel = document.createElement('div');
+    previewPanel.className = 'preview-panel';
+    previewPanel.innerHTML = `
+        
+        <iframe style="width: 100%; height: calc(100% - 48px); border: none;"></iframe>
+    `;
+    content.appendChild(previewPanel);
+    setupResizer();
+}
+
+// Add event listener for real-time preview updates
+editor.on('change', updatePreview);
+updatePreview();
+} else {
+// Show output panel
+if (outputPanel) {
+    outputPanel.style.display = 'flex';
+}
+
+content.style.gridTemplateColumns = '1fr 400px';
+if (existingPreview) {
+    existingPreview.remove();
+    editor.off('change', updatePreview);
+}
+}
+}
+
+// Event handlers
+themeSelect.addEventListener('change', (e) => {
+    editor.setOption('theme', e.target.value);
+});
+
+languageSelect.addEventListener('change', (e) => {
+    changeLanguage(e.target.value);
+});
+
+runButton.addEventListener('click', () => {
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+        outputDiv.textContent = 'Connection lost. Reconnecting...\n';
+        initWebSocket();
+        return;
+    }
+
+    runButton.disabled = true;
+    runButton.style.opacity = '0.5';
+    runButton.style.cursor = 'not-allowed';
+
+    outputDiv.textContent = '';
+    isRunning = true;
+    updateStatus(true);
+    
+    try {
+        socket.send(JSON.stringify({
+            command: "run",
+            code: editor.getValue(),
+            language: currentLanguage
+        }));
+        inputField.focus();
+    } catch (error) {
+        console.error('Error sending code:', error);
+        outputDiv.textContent = 'Error sending code. Please try again.\n';
+        updateStatus(false);
+    }
+});
+
+stopButton.addEventListener('click', () => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ command: "stop" }));
+    }
+    isRunning = false;
+    updateStatus(false);
+    refresh();
+});
+
+function sendInput() {
+    if (!isRunning) return;
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+        outputDiv.textContent += 'Connection lost. Attempting to reconnect...\n';
+        initWebSocket();
+        return;
+    }
+
+    const input = inputField.value.trim();
+
+    if (input) {
+        try {
+            socket.send(JSON.stringify({
+                command: "input",
+                input: input + '\n'
+            }));
+            outputDiv.textContent += `> ${input}\n`;
+            inputField.value = '';
+        } catch (error) {
+            console.error('Error sending input:', error);
+            outputDiv.textContent += 'Error sending input. Please try again.\n';
+        }
+    }
+    inputField.focus();
+}
+
+sendButton.addEventListener('click', sendInput);
+inputField.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendInput();
+    }
+});
+
+function updateStatus(running) {
+    isRunning = running;
+    statusDot.classList.toggle('running', running);
+    statusText.textContent = running ? 'Running' : 'Stopped';
+    runButton.disabled = running;
+    stopButton.disabled = !running;
+    
+    if (!running) {
+        stopButton.disabled = true;
+        stopButton.style.opacity = '0.5';
+        stopButton.style.cursor = 'not-allowed';
+        runButton.disabled = false;
+        runButton.style.opacity = '1';
+        runButton.style.cursor = 'pointer';
+    } else {
+        stopButton.disabled = false;
+        stopButton.style.opacity = '1';
+        stopButton.style.cursor = 'pointer';
+    }
+}
+
+function refresh() {
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+        initWebSocket();
+    }
+
+    isRunning = false;
+    updateStatus(false);
+    outputDiv.textContent = '';
+    inputField.value = '';
+
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ command: "stop" }));
+    }
+}
+
+// Sidebar functionality
+document.querySelectorAll('.sidebar-icon').forEach(icon => {
+    icon.addEventListener('click', () => {
+        const language = icon.dataset.language;
+        changeLanguage(language);
+        refresh();
+    });
+});
+
+// Window events
+window.addEventListener('beforeunload', () => {
+    if (socket) {
+        socket.close();
+    }
+});
+
+// Initialize the editor
+function initializeEditor() {
+    changeLanguage('python');
+    initWebSocket();
+    editor.refresh();
+    setupResizer(); // Add this line
+}
+
+// Start the editor
+document.addEventListener('DOMContentLoaded', initializeEditor);
+
+
+
+function updatePreview() {
+    if (!['html', 'css'].includes(currentLanguage)) {
+        return;
+    }
+
+    const previewPanel = document.querySelector('.preview-panel');
+    if (!previewPanel) return;
+
+    const iframe = previewPanel.querySelector('iframe');
+    const doc = iframe.contentDocument;
+    doc.open();
+    
+    let htmlContent = '';
+    let cssContent = '';
+    let jsContent = '';
+
+    // Get content based on current language
+    switch (currentLanguage) {
+        case 'html':
+            htmlContent = editor.getValue();
+            break;
+        case 'css':
+            cssContent = editor.getValue();
+            break;
+    }
+
+    const fullContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>${cssContent}</style>
+        </head>
+        <body>
+            ${htmlContent}   
+        </body>
+        </html>
+    `;
+
+    doc.write(fullContent);
+    doc.close();
+}
+
+ 
+    function setupResizer() {
+    const content = document.querySelector('.content');
+    const editorPanel = document.querySelector('.editor-panel');
+    const outputPanel = document.querySelector('.output-panel');
+    const previewPanel = document.querySelector('.preview-panel');
+
+    // Create resizer elements
+    const editorResizer = document.createElement('div');
+    editorResizer.className = 'resizer';
+    editorPanel.appendChild(editorResizer);
+
+    // Create overlay for smooth resizing
+    const overlay = document.createElement('div');
+    overlay.className = 'resize-overlay';
+    document.body.appendChild(overlay);
+
+    let isResizing = false;
+    let currentResizer = null;
+    let initialWidth = 0;
+    let initialX = 0;
+
+    function startResizing(e) {
+        isResizing = true;
+        currentResizer = e.target;
+        initialX = e.clientX;
+        initialWidth = currentResizer.parentElement.offsetWidth;
+        
+        overlay.classList.add('active');
+        currentResizer.classList.add('resizing');
+        document.body.style.cursor = 'col-resize';
+    }
+
+    function stopResizing() {
+        if (!isResizing) return;
+        
+        isResizing = false;
+        overlay.classList.remove('active');
+        if (currentResizer) {
+            currentResizer.classList.remove('resizing');
+        }
+        document.body.style.cursor = 'default';
+        
+        // Refresh CodeMirror to ensure proper rendering
+        editor.refresh();
+    }
+
+    function resize(e) {
+    if (!isResizing) return;
+
+    const delta = e.clientX - initialX;
+    const newWidth = initialWidth + delta;
+    const editorPanel = currentResizer.parentElement;
+    const content = editorPanel.parentElement;
+    const previewPanel = document.querySelector('.preview-panel');
+    const outputPanel = document.querySelector('.output-panel');
+    const minWidth = 300;
+    const maxWidth = content.offsetWidth - 200; // Reduce minimum width for preview/output
+
+    if (newWidth >= minWidth && newWidth <= maxWidth) {
+        editorPanel.style.width = `${newWidth}px`;
+        editorPanel.style.flex = 'none';
+        
+        // Calculate remaining width for preview/output panel
+        const remainingWidth = content.offsetWidth - newWidth - 12; // 12px for gap
+        
+        // Adjust preview/output panel width
+        if (previewPanel) {
+            previewPanel.style.width = `${remainingWidth}px`;
+        }
+        if (outputPanel && outputPanel.style.display !== 'none') {
+            outputPanel.style.width = `${remainingWidth}px`;
+        }
+        
+        requestAnimationFrame(() => editor.refresh());
+    }
+}
+    editorResizer.addEventListener('mousedown', startResizing);
+    document.addEventListener('mousemove', resize);
+    document.addEventListener('mouseup', stopResizing);
+    document.addEventListener('mouseleave', stopResizing);
+}

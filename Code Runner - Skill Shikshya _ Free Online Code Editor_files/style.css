@@ -1,0 +1,262 @@
+:root {
+  --primary-bg: #1e1e2e;
+  --secondary-bg: #282839;
+  --toolbar-bg: #2d2d3f;
+  --accent-color: #7c3aed;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --success: #10b981;
+  --error: #ef4444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background-color: var(--primary-bg);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background-color: var(--secondary-bg);
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-icon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: var(--text-secondary);
+}
+
+.sidebar-icon:hover,
+.sidebar-icon.active {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.user-count-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--success);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.toolbar {
+  background-color: var(--toolbar-bg);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.language-select,
+.theme-select {
+  background-color: var(--secondary-bg);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  min-width: 100px;
+}
+
+.connection-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.1);
+  white-space: nowrap;
+}
+
+.connection-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.connection-count {
+  color: var(--success);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(110%);
+}
+
+.btn-run {
+  background-color: var(--success);
+  color: white;
+}
+.btn-stop {
+  background-color: var(--error);
+  color: white;
+}
+
+.content {
+  display: flex;
+  gap: 6px;
+  padding: 1rem;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.editor-panel {
+  flex: 1;
+  min-width: 300px;
+  background-color: red;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.output-panel,
+.preview-panel {
+  width: 400px;
+  background-color: var(--secondary-bg);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.output-header {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+}
+
+#output {
+  flex: 1;
+  padding: 1rem;
+  font-family: "JetBrains Mono", monospace;
+  background-color: var(--primary-bg);
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-y: auto;
+}
+
+.input-container {
+  padding: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#input {
+  flex: 1;
+  padding: 0.5rem;
+  background-color: var(--primary-bg);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  outline: none;
+}
+
+.status-bar {
+  background-color: var(--toolbar-bg);
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--error);
+}
+
+.status-dot.running {
+  background-color: var(--success);
+}
+
+.CodeMirror {
+  height: 100%;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+}
+
+.preview-panel iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+}
+
+.resizer {
+  position: absolute;
+  right: -3px;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--toolbar-bg);
+  cursor: col-resize;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+  z-index: 10;
+}
+
+.resizer:hover,
+.resizer.resizing {
+  background: var(--accent-color);
+}
