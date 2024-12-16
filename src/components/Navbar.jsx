@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import RunnerLogo from "../images/runnerlogo.png";
-import { SidebarData } from "../assets/Data/Data";
-import { useActiveStore } from "../store/store";
+import { SidebarData, themeData } from "../assets/Data/Data";
+import { useActiveStore, useThemeStore } from "../store/store";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import Sidebar from "./Sidebar"; // Import the Sidebar component
 import { HamburgerIcon } from "../assets";
 
-const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+const Navbar = ({ isSidebarOpen, setIsSidebarOpen, code, handleRunCode }) => {
   const { activeIndex, setActiveIndex } = useActiveStore();
+  const { themeIndex, setThemeIndex } = useThemeStore();
 
   const handleSidebarToggle = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -16,6 +17,11 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
   const handleSelectChange = (event) => {
     setActiveIndex(event.target.value);
+  };
+  console.log(activeIndex, "activeIndex");
+
+  const handleThemeChange = (e) => {
+    setThemeIndex(e.target.value);
   };
 
   return (
@@ -57,19 +63,28 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                 className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-1 bg-gray-900 border-gray-700 text-white"
               >
                 {SidebarData?.map((it, index) => (
-                  <option key={it.id || index} value={it.id}>
+                  <option key={it.id || index} value={index}>
                     {it?.name}
                   </option>
                 ))}
               </select>
-              <select className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-1 bg-gray-900 border-gray-700 text-white">
-                {SidebarData?.map((it, index) => (
-                  <option value={it.name}>{it?.name}</option>
+              <select
+                onChange={handleThemeChange}
+                value={themeIndex || ""}
+                className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-1 bg-gray-900 border-gray-700 text-white"
+              >
+                {themeData?.map((it, index) => (
+                  <option key={index} value={index}>
+                    {it?.name}
+                  </option>
                 ))}
               </select>
 
               <div className="flex gap-2">
-                <button className="flex bg-green-600 px-4 py-1 rounded-md hover:bg-green-700">
+                <button
+                  className="flex bg-green-600 px-4 py-1 rounded-md hover:bg-green-700"
+                  onClick={() => handleRunCode(code)}
+                >
                   <PlayArrowIcon /> <span>Run</span>
                 </button>
                 <button className="flex bg-red-600 px-4 py-1 rounded-md hover:bg-red-700">

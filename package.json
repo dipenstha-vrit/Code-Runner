@@ -10,15 +10,28 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@codemirror/lang-cpp": "^6.0.2",
+    "@codemirror/lang-html": "^6.4.9",
+    "@codemirror/lang-java": "^6.0.1",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/lang-php": "^6.0.1",
+    "@codemirror/lang-python": "^6.1.6",
+    "@codemirror/lang-rust": "^6.0.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.2.0",
     "@mui/material": "^6.2.0",
+    "@uiw/codemirror-theme-github": "^4.23.7",
+    "@uiw/codemirror-theme-material": "^4.23.7",
+    "@uiw/codemirror-theme-vscode": "^4.23.7",
+    "@uiw/react-codemirror": "^4.23.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-resizable": "^3.0.5",
     "react-resizable-layout": "^0.7.2",
     "react-resizable-panels": "^2.1.7",
+    "react-use-websocket": "^4.11.1",
     "zustand": "^5.0.2"
   },
   "devDependencies": {

@@ -25,9 +25,9 @@ const Sidebar = ({ isOpen }) => {
               <Tooltip title={it?.name} placement="right">
                 <a
                   href="#"
-                  onClick={() => handleItemClick(it.id)}
+                  onClick={() => handleItemClick(index)}
                   className={`flex items-center p-2 rounded-lg group ${
-                    activeIndex == it.id
+                    activeIndex == index
                       ? "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-white"
                       : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}

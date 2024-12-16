@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import CodeMirror from "@uiw/react-codemirror";
+import { python } from "@codemirror/lang-python";
+import { SidebarData, themeData } from "../assets/Data/Data";
+import { useActiveStore, useThemeStore } from "../store/store";
 
-const ResponsiveResizableContent = () => {
+const ResponsiveResizableContent = ({ code, setCode, language, output }) => {
   const [direction, setDirection] = useState("horizontal");
+  const { activeIndex } = useActiveStore();
+  const { themeIndex } = useThemeStore();
 
   useEffect(() => {
     // Determine layout direction based on window width
@@ -27,10 +33,18 @@ const ResponsiveResizableContent = () => {
         autoSaveId="responsive-panel-group"
         direction={direction}
       >
-        {/* Left or Top Panel */}
+        {/* Code Editor */}
         <Panel defaultSize={50} minSize={30}>
           <div className=" bg-gray-900 rounded-md h-full p-2">
-            <p>Left/Top Panel</p>
+            <CodeMirror
+              value={code}
+              height="100%"
+              className="h-dvh"
+              extensions={SidebarData[activeIndex].ext || [python()]}
+              onChange={(value) => setCode(value)}
+              basicSetup={{ autocompletion: true }}
+              theme={themeData[themeIndex].theme || black}
+            />
           </div>
         </Panel>
 
@@ -43,35 +57,7 @@ const ResponsiveResizableContent = () => {
 
         {/* Right or Bottom Panel */}
         <Panel defaultSize={50} minSize={20}>
-          <PanelGroup
-            className="h-full"
-            autoSaveId="inner-responsive-panel-group"
-            direction="vertical"
-          >
-            {/* Top Right or Bottom Top Panel */}
-            <Panel defaultSize={30} minSize={10}>
-              <div className="bg-gray-900 rounded-md h-full p-2">
-                <form className="h-full w-full">
-                  <textarea
-                    placeholder="Enter Input here"
-                    name="inputBox"
-                    id="inputBox"
-                    className="w-full h-full bg-transparent resize-none focus:outline-none"
-                  ></textarea>
-                </form>
-              </div>
-            </Panel>
-
-            {/* Vertical Resizer */}
-            <PanelResizeHandle className="w-full h-1 bg-gray-700 my-2" />
-
-            {/* Bottom Right or Bottom Panel */}
-            <Panel defaultSize={70} minSize={50}>
-              <div className="bg-gray-900 rounded-md h-full p-2">
-                <p>Output</p>
-              </div>
-            </Panel>
-          </PanelGroup>
+          <div className="bg-gray-900 rounded-md h-full p-2">{output}</div>
         </Panel>
       </PanelGroup>
     </div>
