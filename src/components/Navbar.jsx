@@ -18,7 +18,6 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen, code, handleRunCode }) => {
   const handleSelectChange = (event) => {
     setActiveIndex(event.target.value);
   };
-  console.log(activeIndex, "activeIndex");
 
   const handleThemeChange = (e) => {
     setThemeIndex(e.target.value);
@@ -56,11 +55,11 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen, code, handleRunCode }) => {
               </div>
             </div>
 
-            <div className="flex gap-6 items-center">
+            <div className="flex gap-2 lg:gap-6 items-center">
               <select
                 onChange={handleSelectChange}
                 value={activeIndex || ""}
-                className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-1 bg-gray-900 border-gray-700 text-white"
+                className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  py-1 bg-gray-900 border-gray-700 text-white"
               >
                 {SidebarData?.map((it, index) => (
                   <option key={it.id || index} value={index}>
@@ -68,10 +67,11 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen, code, handleRunCode }) => {
                   </option>
                 ))}
               </select>
+
               <select
                 onChange={handleThemeChange}
                 value={themeIndex || ""}
-                className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-1 bg-gray-900 border-gray-700 text-white"
+                className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  py-1 bg-gray-900 border-gray-700 text-white"
               >
                 {themeData?.map((it, index) => (
                   <option key={index} value={index}>

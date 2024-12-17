@@ -10,16 +10,18 @@ const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { activeIndex } = useActiveStore();
   const [code, setCode] = useState("");
+  const [input, setInput] = useState("");
   const [language, setLanguage] = useState("python");
   const [output, setOutput] = useState("");
-  console.log(code, "code");
   const [socketUrl, setSocketUrl] = useState(
     "wss://compiler.skillshikshya.com/ws/compiler/"
   );
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
-    shouldReconnect: () => true, // Automatically try to reconnect if the WebSocket closes
-  });
-  console.log(language, "language");
+  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
+    socketUrl,
+    {
+      shouldReconnect: () => true, // Automatically try to reconnect if the WebSocket closes
+    }
+  );
 
   useEffect(() => {
     setLanguage(SidebarData[activeIndex]?.name.toLowerCase());
@@ -34,14 +36,14 @@ const App = () => {
 
   // Handle incoming WebSocket messages
   useEffect(() => {
-    if (lastMessage) {
-      console.log("Received message:", lastMessage);
+    if (lastJsonMessage) {
+      console.log("Received message:", lastJsonMessage);
       // Process the incoming message and update output if necessary
-      if (lastMessage.data) {
-        setOutput(lastMessage.data); // Update output box with response
+      if (lastJsonMessage.data) {
+        setOutput((prev) => prev + lastJsonMessage.data); // Update output box with response
       }
     }
-  }, [lastMessage]);
+  }, [lastJsonMessage]);
 
   // Handle running code (sending WebSocket message)
   const handleRunCode = () => {
@@ -51,30 +53,42 @@ const App = () => {
         code: code,
         command: "run",
       };
-      sendMessage(JSON.stringify(message)); // Send the code to the WebSocket server
+      setOutput("");
+      sendJsonMessage(message); // Send the code to the WebSocket server
     } else {
       setOutput("WebSocket is not connected.");
     }
   };
-
+  const handleInputCode = () => {
+    const message = {
+      command: "input",
+      input: input,
+    };
+    sendJsonMessage(message);
+  };
+  console.log(input, "input");
   return (
     <div className="main-container">
       <Navbar
         isSidebarOpen={isSidebarOpen}
         code={code}
         setIsSidebarOpen={setIsSidebarOpen}
-        sendMessage={sendMessage}
+        sendJsonMessage={sendJsonMessage}
         readyState={readyState}
         handleRunCode={handleRunCode}
       />
       <Sidebar isOpen={isSidebarOpen} />
       <MainComponent
+        input={input}
+        setInput={setInput}
         code={code}
         setCode={setCode}
         language={language}
         setLanguage={setLanguage}
         handleRunCode={handleRunCode}
         output={output}
+        setOutput={setOutput}
+        handleInputCode={handleInputCode}
       />
     </div>
   );
